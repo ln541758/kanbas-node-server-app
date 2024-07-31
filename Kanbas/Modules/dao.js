@@ -1,17 +1,18 @@
-import ModuleModel from "./model.js";
+import model from "./model.js";
 
-export const findModulesForCourse = (courseId) => {
-  return ModuleModel.find({ course: courseId });
+export const findModulesByCourse = (courseId) => {
+  return model.find({ course: courseId });
 };
 
 export const createModule = (module) => {
-  return ModuleModel.create(module);
+  delete module._id
+  return model.create(module);
 };
 
 export const deleteModule = (moduleId) => {
-  return ModuleModel.deleteOne({ _id: moduleId });
+  return model.deleteOne({ _id: moduleId });
 };
 
 export const updateModule = (moduleId, module) => {
-  return ModuleModel.updateOne({ _id: moduleId }, { $set: module });
+  return model.updateOne({ _id: moduleId }, { $set: module });
 };

@@ -9,7 +9,7 @@ const lessonSchema = new mongoose.Schema(
   },
   { collection: "lessons" }
 );
-const moduleSchema = new mongoose.Schema(
+const schema = new mongoose.Schema(
   {
     name: { type: String, required: true },
     description: { type: String },
@@ -19,4 +19,4 @@ const moduleSchema = new mongoose.Schema(
   { collection: "modules" }
 );
 
-export default moduleSchema;
+export default schema;
