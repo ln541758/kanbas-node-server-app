@@ -9,6 +9,8 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import UserRoutes from "./Users/routes.js";
 import session from "express-session";
+import MongoStore from 'connect-mongo';
+
 
 const app = express();
 const CONNECTION_STRING =
