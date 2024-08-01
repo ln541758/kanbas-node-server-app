@@ -19,35 +19,10 @@ const app = express();
 
 const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:3000"]
  
-app.use(cors({
-    credentials: true,
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      } else {
-        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-        return callback(new Error(msg), false);
-      }
-    }
-}));
- 
-const sessionOptions = {
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-};
-if (process.env.NODE_ENV !== "development") {
-    sessionOptions.proxy = true;
-    sessionOptions.cookie = {
-        sameSite: "none",
-        secure: true,
-    };
-}
-/** 
 app.use(
   cors({
     credentials: true,
-    origin: process.env.NETLIFY_URL || "http://localhost:3000",
+    origin: 'https://a6--kanbas-react-web-app-ln541758.netlify.app',
   })
 );
 
@@ -69,7 +44,7 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-*/
+
 app.use(express.json()); // do all work after this line
 UserRoutes(app);
 ModuleRoutes(app);
