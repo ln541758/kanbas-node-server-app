@@ -10,12 +10,40 @@ import "dotenv/config";
 import UserRoutes from "./Users/routes.js";
 import session from "express-session";
 
-
+ 
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
 mongoose.connect(CONNECTION_STRING);
 
 const app = express();
+
+const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:3000"]
+ 
+app.use(cors({
+    credentials: true,
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+        return callback(new Error(msg), false);
+      }
+    }
+}));
+ 
+const sessionOptions = {
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+};
+if (process.env.NODE_ENV !== "development") {
+    sessionOptions.proxy = true;
+    sessionOptions.cookie = {
+        sameSite: "none",
+        secure: true,
+    };
+}
+/** 
 app.use(
   cors({
     credentials: true,
@@ -41,7 +69,7 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-
+*/
 app.use(express.json()); // do all work after this line
 UserRoutes(app);
 ModuleRoutes(app);
@@ -51,3 +79,4 @@ Hello(app);
 Lab5(app);
 
 app.listen(process.env.PORT || 4000);
+
