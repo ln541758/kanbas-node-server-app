@@ -16,13 +16,11 @@ const CONNECTION_STRING =
 mongoose.connect(CONNECTION_STRING);
 
 const app = express();
-
-const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:3000"]
  
 app.use(
   cors({
     credentials: true,
-    origin: 'https://a6--kanbas-react-web-app-ln541758.netlify.app',
+    origin: process.env.NETLIFY_URL || "http://localhost:3000",
   })
 );
 
@@ -33,9 +31,7 @@ const sessionOptions = {
   saveUninitialized: false,
 };
 
-app.use(
-  session(sessionOptions)
-);
+
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
@@ -44,7 +40,9 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-
+app.use(
+  session(sessionOptions)
+);
 app.use(express.json()); // do all work after this line
 UserRoutes(app);
 ModuleRoutes(app);
