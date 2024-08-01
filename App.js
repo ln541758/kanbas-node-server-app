@@ -25,12 +25,14 @@ app.use(
 
 
 const sessionOptions = {
-  secret: process.env.SESSION_SECRET || "kanbas",
+  secret: "any string",
   resave: false,
   saveUninitialized: false,
 };
 
-
+app.use(
+  session(sessionOptions)
+);
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
@@ -39,11 +41,8 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-app.use(
-  session(sessionOptions)
-);
-app.use(express.json()); // do all work after this line
 
+app.use(express.json()); // do all work after this line
 UserRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
