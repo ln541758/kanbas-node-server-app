@@ -10,11 +10,12 @@ import "dotenv/config";
 import UserRoutes from "./Users/routes.js";
 import session from "express-session";
 
-const app = express();
+
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
 mongoose.connect(CONNECTION_STRING);
 
+const app = express();
 app.use(
   cors({
     credentials: true,
@@ -24,14 +25,12 @@ app.use(
 
 
 const sessionOptions = {
-  secret: "any string",
+  secret: process.env.SESSION_SECRET || "kanbas",
   resave: false,
   saveUninitialized: false,
 };
 
-app.use(
-  session(sessionOptions)
-);
+
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
@@ -40,8 +39,11 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-
+app.use(
+  session(sessionOptions)
+);
 app.use(express.json()); // do all work after this line
+
 UserRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
