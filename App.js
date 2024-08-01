@@ -9,37 +9,29 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import UserRoutes from "./Users/routes.js";
 import session from "express-session";
-import MongoStore from 'connect-mongo';
-
 
 const app = express();
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
-mongoose.connect(CONNECTION_STRING, {useNewUrlParser: true, useUnifiedTopology: true});
+mongoose.connect(CONNECTION_STRING);
 
-const allowedOrigins = ["http://localhost:3000", "https://a6--kanbas-react-web-app-ln541758.netlify.app"];
+app.use(
+  cors({
+    credentials: true,
+    origin: process.env.NETLIFY_URL || "http://localhost:3000",
+  })
+);
 
-app.use(cors({
-  credentials: true,
-  origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-          callback(null, true);
-      } else {
-          callback(new Error('Not allowed by CORS'));
-      }
-  }
-}));
 
 const sessionOptions = {
-  secret: "what ever",
+  secret: "any string",
   resave: false,
   saveUninitialized: false,
-  store: MongoStore.create({
-      mongoUrl: CONNECTION_STRING,
-      collectionName: 'sessions',
-  }),
 };
 
+app.use(
+  session(sessionOptions)
+);
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
   sessionOptions.cookie = {
@@ -48,10 +40,8 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-app.use(session(sessionOptions));
 
 app.use(express.json()); // do all work after this line
-
 UserRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
