@@ -24,7 +24,7 @@ app.use(
     // origin: "http://localhost:3000",
   })
 );
-
+app.use(express.json()); // do all work after this line
 
 const sessionOptions = {
   secret: "any string",
@@ -45,7 +45,7 @@ if (process.env.NODE_ENV !== "development") {
 app.use(
   session(sessionOptions)
 );
-app.use(express.json()); // do all work after this line
+
 UserRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
