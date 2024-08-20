@@ -9,14 +9,15 @@ import mongoose from "mongoose";
 import "dotenv/config";
 import UserRoutes from "./Users/routes.js";
 import session from "express-session";
+import LikesRoutes from "./Napster/likes/routes.js";
+import ChatRoutes from "./openai/chat/routes.js";
 
- 
 const CONNECTION_STRING =
   process.env.MONGO_CONNECTION_STRING || "mongodb://127.0.0.1:27017/kanbas";
 mongoose.connect(CONNECTION_STRING);
 
 const app = express();
- 
+
 app.use(
   cors({
     credentials: true,
@@ -25,14 +26,14 @@ app.use(
   })
 );
 
+app.use(express.json()); // do all work after this line
 
 const sessionOptions = {
   secret: "any string",
   resave: false,
   saveUninitialized: false,
-  cookie: {}
+  cookie: {},
 };
-
 
 if (process.env.NODE_ENV !== "development") {
   sessionOptions.proxy = true;
@@ -42,16 +43,15 @@ if (process.env.NODE_ENV !== "development") {
     domain: process.env.NODE_SERVER_DOMAIN,
   };
 }
-app.use(
-  session(sessionOptions)
-);
-app.use(express.json()); // do all work after this line
+app.use(session(sessionOptions));
+
 UserRoutes(app);
 ModuleRoutes(app);
 CourseRoutes(app);
 AssignmentRoutes(app);
 Hello(app);
 Lab5(app);
+LikesRoutes(app);
+ChatRoutes(app);
 
 app.listen(process.env.PORT || 4000);
-
